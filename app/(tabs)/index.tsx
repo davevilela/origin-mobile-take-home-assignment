@@ -1,14 +1,16 @@
 import { Stack } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
+import { Button } from 'tamagui';
 
-import { ScreenContent } from '~/components/ScreenContent';
+import { useAuth } from '~/providers/auth/AuthProvider';
 
 export default function Home() {
+  const { signOut } = useAuth();
   return (
     <>
       <Stack.Screen options={{ title: 'Tab One' }} />
       <View style={styles.container}>
-        <ScreenContent path="app/(tabs)/index.tsx" title="Tab One" />
+        <Button onPress={() => signOut()}>Sign out</Button>
       </View>
     </>
   );
