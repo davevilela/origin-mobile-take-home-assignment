@@ -22,6 +22,7 @@ import { z } from 'zod';
 import { FieldControl } from '~/components/ui/FieldControl';
 import { FlushInput } from '~/components/ui/FlushInput';
 import { SecureEntryButton } from '~/components/ui/SecureEntryButton';
+import { transactionServices } from '~/features/transactions/services/transactionsServices';
 import { useSafeAreaInsets } from '~/hooks/useSafeAreaInsets';
 import { useSupabase } from '~/lib/supabase/useSupabase';
 
@@ -160,7 +161,15 @@ export const SignInScreen = () => {
                 />
 
                 <Button
-                  onPress={() => onSubmit()}
+                  onPress={async () => {
+                    // onSubmit()
+                    const res = await transactionServices.updateTransactionCoordinates({
+                      id: 1,
+                      Lat: 123,
+                      Lon: 456,
+                    });
+                    console.log(res);
+                  }}
                   size="$5"
                   theme="accent"
                   bordered

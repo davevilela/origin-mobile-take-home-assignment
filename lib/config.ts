@@ -13,4 +13,5 @@ if (!process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY) {
 export const Config = {
   supabaseUrl: String(process.env.EXPO_PUBLIC_SUPABASE_URL),
   supabaseAnonKey: String(process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY),
+  baseApiUrl: String(process.env.EXPO_PUBLIC_BASE_API_URL),
 };

@@ -10,7 +10,11 @@ TODO project structure and folders
 
 TODO Instructions to run locally
 
-# TODO
+## Final Considerations about tooling and project structure
+
+TODO
+
+## BACKLOG
 
 - [ ] Project structure
   - [x] Setup Expo
@@ -20,11 +24,11 @@ TODO Instructions to run locally
   - [ ] Setup Tanstack Query
 - [ ] Features
   - [x] Sign-In Flow
-  - [ ] Sign-Up Flow
+  - [x] Sign-Up Flow
   - [ ] File Upload
-    - [ ] Avatar upload
+    - [x] Avatar upload
     - [ ] Receipts upload
-  - [ ] Transactions service
+  - [x] Transactions service
   - [ ] Transactions Listing Page
     - [ ] Pull to refresh
     - [ ] Pagination
@@ -35,7 +39,3 @@ TODO Instructions to run locally
     - [ ] Upload receipt for transaction
   - [x] IOS Compatibily
   - [ ] Android Compatibility
-
-## Final Considerations about tooling and project structure
-
-TODO

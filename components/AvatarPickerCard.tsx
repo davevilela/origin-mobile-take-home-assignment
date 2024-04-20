@@ -1,7 +1,8 @@
 import { Plus } from '@tamagui/lucide-icons';
 import { Image } from 'expo-image';
 import { PropsWithChildren } from 'react';
-import { YStack, Circle, Text } from 'tamagui';
+import { Alert } from 'react-native';
+import { YStack, Circle } from 'tamagui';
 import * as DropdownMenu from 'zeego/dropdown-menu';
 
 import { AvatarPickerProps, useAvatarPicker } from '~/hooks/useAvatarPicker';
@@ -48,31 +49,55 @@ function AvatarPickerMenu({
   );
 }
 
-export function AvatarPickerCard({ onChange, uri, url }: AvatarPickerProps) {
-  const { pickImage, takePhoto, image, removeImage } = useAvatarPicker({ onChange, uri, url });
+export function AvatarPickerCard({
+  onImagePicked,
+  uri,
+  url,
+  maxSize,
+  onImageRemoved = () => null,
+  children,
+  disabled,
+}: PropsWithChildren<
+  AvatarPickerProps & { maxSize?: number; onImageRemoved?: () => void; disabled?: boolean }
+>) {
+  const { pickImage, takePhoto, image, removeImage } = useAvatarPicker({ onImagePicked, uri, url });
+
+  const onPickerOption = async (mode: 'camera' | 'mediaLibrary' | 'removeImage') => {
+    switch (mode) {
+      case 'camera':
+        takePhoto();
+        break;
+      case 'mediaLibrary': {
+        const result = await pickImage({ maxSize });
+
+        if (result?.error) {
+          Alert.alert(result.error);
+        }
+        break;
+      }
+      case 'removeImage':
+        removeImage();
+        onImageRemoved?.();
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
-    <YStack bg="$gray1" br="$6" ai="center" jc="center" p="$true" gap="$true">
-      <AvatarPickerMenu
-        remove={!!image}
-        onSelect={(mode) => {
-          switch (mode) {
-            case 'camera':
-              takePhoto();
-              break;
-            case 'mediaLibrary':
-              pickImage();
-              break;
-            case 'removeImage':
-              removeImage();
-              break;
-            default:
-              break;
-          }
-        }}>
+    <YStack
+      pointerEvents={disabled ? 'none' : 'unset'}
+      bg="$gray2"
+      br="$6"
+      ai="center"
+      jc="center"
+      p="$true"
+      gap="$true">
+      <AvatarPickerMenu remove={!!image} onSelect={onPickerOption}>
         <Circle pressTheme bg="$gray6" size="$15" theme="alt2" overflow="hidden">
-          {image ? (
+          {image || url ? (
             <Image
-              source={{ uri: image }}
+              source={{ uri: image || url }}
               style={{ flex: 1, height: '100%', width: '100%', objectFit: 'cover' }}
             />
           ) : (
@@ -81,11 +106,7 @@ export function AvatarPickerCard({ onChange, uri, url }: AvatarPickerProps) {
         </Circle>
       </AvatarPickerMenu>
 
-      {image ? (
-        <Text>WOW! Great Picture 📸 We're all set-up!</Text>
-      ) : (
-        <Text>Click to add a picture</Text>
-      )}
+      {children}
     </YStack>
   );
 }

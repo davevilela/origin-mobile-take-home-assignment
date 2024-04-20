@@ -4,7 +4,7 @@ import { SignUpWizard } from '../components/SignUpWizard';
 
 export function SignUpScreen() {
   return (
-    <SafeAreaView style={{ flex: 1 }} edges={['left', 'right', 'bottom']}>
+    <SafeAreaView style={{ flex: 1 }} edges={['left', 'right']}>
       <SignUpWizard />
     </SafeAreaView>
   );

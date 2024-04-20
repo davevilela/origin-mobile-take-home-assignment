@@ -8,6 +8,7 @@ export default function Screen() {
       <Stack.Screen
         options={{
           title: 'Sign Up',
+          headerShadowVisible: false,
         }}
       />
       <SignUpScreen />
