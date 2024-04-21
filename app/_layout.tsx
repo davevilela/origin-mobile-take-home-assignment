@@ -10,7 +10,7 @@ import { useLoadSession } from '~/providers/auth/AuthProvider';
 SplashScreen.preventAutoHideAsync();
 
 export const unstable_settings = {
-  initialRouteName: '(tabs)',
+  initialRouteName: '(app)',
 };
 
 export default function RootLayout() {

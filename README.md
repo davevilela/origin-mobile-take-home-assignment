@@ -21,18 +21,19 @@ TODO
   - [x] Setup Tamagui Theme builder
   - [x] Setup Supabase backend
   - [x] Setup Authentication
-  - [ ] Setup Tanstack Query
+  - [x] Setup Tanstack Query
 - [ ] Features
   - [x] Sign-In Flow
   - [x] Sign-Up Flow
   - [ ] File Upload
     - [x] Avatar upload
     - [ ] Receipts upload
+    - [ ] Load image from bucket
   - [x] Transactions service
   - [ ] Transactions Listing Page
-    - [ ] Pull to refresh
-    - [ ] Pagination
-    - [ ] Filtering by category
+    - [x] Pull to refresh
+    - [x] Pagination
+    - [x] Filtering by category
   - [ ] Transaction Details Page
     - [ ] Pick Latitude and longitude on Map
     - [ ] Display location with static map API

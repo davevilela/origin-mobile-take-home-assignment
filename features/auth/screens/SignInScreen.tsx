@@ -43,7 +43,7 @@ function useCredentialsSignIn() {
         email,
         password,
       });
-      console.log(response, '=asdjlkasjdlja');
+
       return response;
     } catch (error) {
       if (error instanceof AuthApiError) {
@@ -162,13 +162,7 @@ export const SignInScreen = () => {
 
                 <Button
                   onPress={async () => {
-                    // onSubmit()
-                    const res = await transactionServices.updateTransactionCoordinates({
-                      id: 1,
-                      Lat: 123,
-                      Lon: 456,
-                    });
-                    console.log(res);
+                    onSubmit();
                   }}
                   size="$5"
                   theme="accent"

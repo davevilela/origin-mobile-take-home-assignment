@@ -11,9 +11,13 @@ const getMimeType = (uri: string) => mime.getType(uri);
 export type UploadResult = { success: boolean; error: string | null; downloadUrl: string | null };
 
 export async function uploadFile(
-  uri: string,
-  supabase: SupabaseClient<Database>
+  supabase: SupabaseClient<Database>,
+  params: {
+    uri: string;
+    bucket: string;
+  }
 ): Promise<UploadResult> {
+  const { bucket, uri } = params;
   try {
     const fileInfo = await FileSystem.getInfoAsync(uri, { size: true });
 
@@ -33,7 +37,7 @@ export async function uploadFile(
     const filePath = `${Date.now()}.${fileExt}`;
 
     const { data, error: uploadError } = await supabase.storage
-      .from('avatars')
+      .from(bucket)
       .upload(filePath, arraybuffer, {
         contentType: contentType || 'text/plain',
       });

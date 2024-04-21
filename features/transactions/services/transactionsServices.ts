@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-redeclare */
-import { URL, URLSearchParams } from 'url';
+
 import { z } from 'zod';
 
 import { Transaction, TransactionPaginatedRequestBody } from '../types/transactions';

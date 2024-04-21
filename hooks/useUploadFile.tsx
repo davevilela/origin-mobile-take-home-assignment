@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useSupabase } from '~/lib/supabase/useSupabase';
 import { UploadResult, uploadFile } from '~/services/uploadFile';
 
-export function useUploadFile() {
+export function useUploadFile(bucket: string) {
   const supabase = useSupabase();
   const [loading, setLoading] = useState(false);
 
@@ -12,7 +12,7 @@ export function useUploadFile() {
   async function execute({ uri }: { uri: string }) {
     setUploadResult(null);
     setLoading(true);
-    const uploadTask = await uploadFile(uri, supabase);
+    const uploadTask = await uploadFile(supabase, { uri, bucket });
 
     setUploadResult(uploadTask);
 

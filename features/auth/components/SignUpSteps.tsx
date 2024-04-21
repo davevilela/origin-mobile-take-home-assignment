@@ -280,7 +280,7 @@ function UserAvatarStep() {
   const { session } = useAuth();
   const supabase = useSupabase();
   const { setData, data } = useSignUpWizardContext();
-  const [uploadFile, { loading }] = useUploadFile();
+  const [uploadFile, { loading }] = useUploadFile('avatars');
   const { next } = useStepperContext();
 
   const handleUpload = async () => {

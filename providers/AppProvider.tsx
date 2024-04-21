@@ -1,6 +1,6 @@
 import { ComponentProps, PropsWithChildren } from 'react';
 
-import { ReactQueryProvider } from './ReactQueryProvider';
+import { QueryClientProvider } from './QueryClientProvider';
 import { SafeAreaProvider } from './SafeAreaProvider';
 import { TamaguiProvider } from './TamaguiProvider';
 import { ThemeProvider } from './ThemeProvider';
@@ -12,7 +12,7 @@ const BaseProviders = compose([
   ThemeProvider,
   SafeAreaProvider,
   TamaguiProvider,
-  ReactQueryProvider,
+  QueryClientProvider,
 ]);
 
 export function AppProvider({

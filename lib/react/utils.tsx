@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 export const compose = (providers: React.FC<{ children: React.ReactNode }>[]) =>
   providers.reduce((Prev, Curr) => ({ children }) => {
@@ -18,3 +18,11 @@ export const useStableCallback = <T,>(callback: T) => {
 
   return ref.current;
 };
+
+export function usePrevious<T = any>(value: T) {
+  const ref = useRef<T>(value);
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current!;
+}

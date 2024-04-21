@@ -6,7 +6,7 @@ import { useControllableState } from 'tamagui';
 
 import { formatBytes } from '~/lib/helpers';
 
-export type AvatarPickerProps = {
+export type ImagePickerProps = {
   /**
    * Default URL of uploaded image
    */
@@ -17,7 +17,7 @@ export type AvatarPickerProps = {
   uri?: string | null;
   onImagePicked?: (value: string | null) => void;
 };
-export function useAvatarPicker({ onImagePicked, uri }: AvatarPickerProps = {}) {
+export function useImagePicker({ onImagePicked, uri }: ImagePickerProps = {}) {
   const [cameraPermission, requestCameraPermission] = ImagePicker.useCameraPermissions();
   const [mediaLibraryPermission, requestMediaLibraryPermission] =
     ImagePicker.useMediaLibraryPermissions();
@@ -28,7 +28,7 @@ export function useAvatarPicker({ onImagePicked, uri }: AvatarPickerProps = {}) 
     defaultProp: null,
   });
 
-  const pickImage = async ({ maxSize }: { maxSize?: number }) => {
+  const pickImage = async ({ maxSize }: { maxSize?: number } = {}) => {
     if (!mediaLibraryPermission?.granted && !mediaLibraryPermission?.canAskAgain) {
       Alert.alert(
         'Permission not granted',

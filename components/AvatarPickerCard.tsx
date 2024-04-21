@@ -3,51 +3,10 @@ import { Image } from 'expo-image';
 import { PropsWithChildren } from 'react';
 import { Alert } from 'react-native';
 import { YStack, Circle } from 'tamagui';
-import * as DropdownMenu from 'zeego/dropdown-menu';
 
-import { AvatarPickerProps, useAvatarPicker } from '~/hooks/useAvatarPicker';
+import { ImagePickerMenu } from './ImagePickerMenu';
 
-function AvatarPickerMenu({
-  children,
-  onSelect,
-  remove,
-}: {
-  children: React.ReactElement;
-  onSelect?: (mode: 'camera' | 'mediaLibrary' | 'removeImage') => void;
-  remove?: boolean;
-}) {
-  return (
-    <DropdownMenu.Root>
-      <DropdownMenu.Trigger asChild>{children}</DropdownMenu.Trigger>
-      <DropdownMenu.Content>
-        <DropdownMenu.Item
-          onSelect={() => {
-            onSelect?.('camera');
-          }}
-          key="camera">
-          <DropdownMenu.ItemTitle>Take Picture</DropdownMenu.ItemTitle>
-        </DropdownMenu.Item>
-        <DropdownMenu.Item
-          onSelect={() => {
-            onSelect?.('mediaLibrary');
-          }}
-          key="mediaLibrary">
-          <DropdownMenu.ItemTitle>Pick image from gallery</DropdownMenu.ItemTitle>
-        </DropdownMenu.Item>
-        {!!remove && (
-          <DropdownMenu.Item
-            destructive
-            onSelect={() => {
-              onSelect?.('removeImage');
-            }}
-            key="removeImage">
-            <DropdownMenu.ItemTitle>Remove image</DropdownMenu.ItemTitle>
-          </DropdownMenu.Item>
-        )}
-      </DropdownMenu.Content>
-    </DropdownMenu.Root>
-  );
-}
+import { ImagePickerProps, useImagePicker } from '~/hooks/useImagePicker';
 
 export function AvatarPickerCard({
   onImagePicked,
@@ -58,9 +17,9 @@ export function AvatarPickerCard({
   children,
   disabled,
 }: PropsWithChildren<
-  AvatarPickerProps & { maxSize?: number; onImageRemoved?: () => void; disabled?: boolean }
+  ImagePickerProps & { maxSize?: number; onImageRemoved?: () => void; disabled?: boolean }
 >) {
-  const { pickImage, takePhoto, image, removeImage } = useAvatarPicker({ onImagePicked, uri, url });
+  const { pickImage, takePhoto, image, removeImage } = useImagePicker({ onImagePicked, uri, url });
 
   const onPickerOption = async (mode: 'camera' | 'mediaLibrary' | 'removeImage') => {
     switch (mode) {
@@ -93,7 +52,7 @@ export function AvatarPickerCard({
       jc="center"
       p="$true"
       gap="$true">
-      <AvatarPickerMenu remove={!!image} onSelect={onPickerOption}>
+      <ImagePickerMenu remove={!!image} onSelect={onPickerOption}>
         <Circle pressTheme bg="$gray6" size="$15" theme="alt2" overflow="hidden">
           {image || url ? (
             <Image
@@ -104,7 +63,7 @@ export function AvatarPickerCard({
             <Plus size="$8" strokeWidth={3} />
           )}
         </Circle>
-      </AvatarPickerMenu>
+      </ImagePickerMenu>
 
       {children}
     </YStack>

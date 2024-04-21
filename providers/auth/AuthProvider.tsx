@@ -133,7 +133,7 @@ export function useProtectedRoute() {
       replaceRoute('/sign-in');
     } else if ((!!session && inAuthGroup) || (!!session && !segments.length)) {
       // Redirect away from the sign-in page.
-      replaceRoute('/(tabs)/');
+      replaceRoute('/(app)/');
     }
   }, [segments, session, isLoading]);
 
