@@ -20,6 +20,14 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         locationAlwaysAndWhenInUsePermission: 'Allow $(PRODUCT_NAME) to use your location.',
       },
     ],
+    [
+      'expo-build-properties',
+      {
+        ios: {
+          deploymentTarget: '13.4',
+        },
+      },
+    ],
   ],
   experiments: {
     typedRoutes: true,

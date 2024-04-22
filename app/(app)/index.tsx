@@ -4,15 +4,15 @@ import { Banknote, ChevronRight, Landmark, Receipt, WalletCards } from '@tamagui
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { Link, Stack } from 'expo-router';
 import { useDeferredValue, useMemo, useState } from 'react';
-import { Pressable, RefreshControl } from 'react-native';
+import { RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ListItem, SizableText, Text, Theme, ThemeName, XStack, YStack } from 'tamagui';
+import { ListItem, SizableText, Text, Theme, ThemeName, XStack, YStack, useTheme } from 'tamagui';
 
 import { CustomAvatar } from '~/components/ui/CustomAvatar';
+import { useProfile } from '~/features/auth/hooks/useProfile';
 import { transactionServices } from '~/features/transactions/services/transactionsServices';
 import { Transaction, TransactionTypes } from '~/features/transactions/types/transactions';
-import { formatDateDistance } from '~/lib/helpers';
-import { useAuth } from '~/providers/auth/AuthProvider';
+import { formatCurrency, formatDateDistance } from '~/lib/helpers';
 
 function useTransactionsQuery({ pageSize = 10 }: { pageSize?: number } = {}) {
   const query = useInfiniteQuery({
@@ -62,12 +62,29 @@ const transactionTypeThemes: Record<TransactionTypes, TransactionTemplateType> =
   },
 };
 
+function CurrenUserAvatar() {
+  const { profile } = useProfile();
+
+  return (
+    <Link href="/profile">
+      <CustomAvatar
+        size="$2.5"
+        username={profile.full_name || ''}
+        fallbackType="image"
+        src={profile.avatarUrl!}
+      />
+    </Link>
+  );
+}
+
 export default function Home() {
+  const theme = useTheme();
   const [searchTerm, setSearchTerm] = useState('');
-  const { session, signOut } = useAuth();
-  const { transactions, refetch, isLoading, fetchNextPage, hasNextPage } = useTransactionsQuery({
-    pageSize: 10,
-  });
+
+  const { transactions, refetch, isLoading, isRefetching, fetchNextPage, hasNextPage } =
+    useTransactionsQuery({
+      pageSize: 10,
+    });
 
   const deferredSearchTerm = useDeferredValue(searchTerm);
 
@@ -86,40 +103,37 @@ export default function Home() {
       <Stack.Screen
         options={{
           title: 'Transactions',
-
           headerShown: true,
-
           headerSearchBarOptions: {
             inputType: 'text',
+            headerIconColor: theme.color12.val,
+            textColor: theme.color12.val,
+            hintTextColor: theme.color10.val,
+            shouldShowHintSearchIcon: false,
             placeholder: 'Type to search',
             onChangeText: (term) => setSearchTerm(term.nativeEvent.text),
           },
           headerRight(props) {
             return (
               <YStack alignSelf="flex-end" h="100%">
-                <Pressable onPress={() => signOut()}>
-                  <CustomAvatar
-                    size="$2.5"
-                    username={session?.user.email || ''}
-                    fallbackType="image"
-                  />
-                </Pressable>
+                <CurrenUserAvatar />
               </YStack>
             );
           },
         }}
       />
-      <SafeAreaView style={{ flex: 1 }} edges={['left', 'right', 'top']}>
+      <SafeAreaView style={{ flex: 1 }} edges={['left', 'right']}>
         <YStack f={1} px="$4">
           <FlashList
             data={filteredItems}
-            refreshControl={<RefreshControl refreshing={isLoading} onRefresh={() => refetch({})} />}
+            refreshControl={
+              <RefreshControl refreshing={isRefetching} onRefresh={() => refetch({})} />
+            }
             ListHeaderComponent={<YStack h="$4" />}
             contentInsetAdjustmentBehavior="automatic"
             keyExtractor={(item) => String(item.Id)}
-            onEndReachedThreshold={0.5}
             onEndReached={() => {
-              if (isLoading || hasNextPage) return;
+              if (isLoading || !hasNextPage) return;
               fetchNextPage();
             }}
             renderItem={({ item, index }) => {
@@ -173,12 +187,4 @@ export default function Home() {
       </SafeAreaView>
     </>
   );
-}
-
-function formatCurrency(amount: number) {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    currencyDisplay: 'narrowSymbol',
-  }).format(amount);
 }

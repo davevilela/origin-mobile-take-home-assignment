@@ -24,8 +24,8 @@ export function StaticMapView(props: StaticMapViewProps) {
   );
 
   return (
-    <YStack {...stackProps}>
-      <MapView pointerEvents="none" style={{ flex: 1 }} showsUserLocation region={region}>
+    <YStack {...stackProps} style={{ pointerEvents: 'none' }}>
+      <MapView style={{ flex: 1 }} showsUserLocation region={region}>
         {!!region && <Marker coordinate={region} title={markerTitle} />}
       </MapView>
     </YStack>

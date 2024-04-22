@@ -2,7 +2,7 @@ import { Image } from 'expo-image';
 import { Avatar, AvatarProps, SizableText } from 'tamagui';
 
 function getInitials(name: string): string {
-  return name.split(' ').reduce((prev, curr) => (prev += curr.charAt(0).toUpperCase()), '');
+  return name?.split(' ').reduce((prev, curr) => (prev += curr.charAt(0).toUpperCase()), '');
 }
 export function CustomAvatar(
   props: Pick<AvatarProps, 'size'> & {
@@ -16,12 +16,14 @@ export function CustomAvatar(
   const fallbackUrl = `https://avatar.vercel.sh/${initials}`;
   return (
     <Avatar bg="$gray4" circular size={size}>
-      <Avatar.Image accessibilityLabel={username} src={src} />
+      {!!src && <Avatar.Image accessibilityLabel={username} src={src} />}
       <Avatar.Fallback delayMs={600} backgroundColor="$gray4" ai="center" jc="center">
         {fallbackType === 'image' ? (
           <Image
             style={{ height: '100%', width: '100%' }}
-            source={fallbackUrl!}
+            source={{
+              uri: fallbackUrl,
+            }}
             contentFit="cover"
             cachePolicy="disk"
             transition={200}

@@ -44,6 +44,7 @@ export type UpdateTransactionReceiptParams = z.infer<typeof UpdateTransactionRec
 // API Functions
 async function fetchTransactions(params: FetchTransactionsParams) {
   FetchTransactionsParams.parse(params);
+
   // @ts-ignore
   const searchParams = new URLSearchParams(Object.entries(params));
   const url = new URL(resources.transactions);

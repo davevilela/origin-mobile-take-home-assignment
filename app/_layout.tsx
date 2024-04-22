@@ -2,12 +2,16 @@ import { Session } from '@supabase/supabase-js';
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
 import React, { useCallback, useState } from 'react';
-import { View } from 'react-native';
+import { LogBox, View } from 'react-native';
 
+import { NetinfoIndicator } from '~/components/NetinfoIndicator';
 import { AppProvider } from '~/providers/AppProvider';
 import { useLoadSession } from '~/providers/auth/AuthProvider';
 
 SplashScreen.preventAutoHideAsync();
+// Warning: Cannot update a component (`Input`) while rendering a different component (`Theme`)
+
+LogBox.ignoreLogs(['??', 'Warning: Cannot update a component']);
 
 export const unstable_settings = {
   initialRouteName: '(app)',
@@ -37,7 +41,16 @@ export default function RootLayout() {
   return (
     <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
       <AppProvider initialSession={initialSession}>
-        <Stack />
+        <NetinfoIndicator />
+        <Stack>
+          <Stack.Screen
+            name="profile"
+            options={{
+              // Set the presentation mode to modal for our modal route.
+              presentation: 'modal',
+            }}
+          />
+        </Stack>
       </AppProvider>
     </View>
   );

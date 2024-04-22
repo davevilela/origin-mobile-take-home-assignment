@@ -1,10 +1,12 @@
 import NetInfo from '@react-native-community/netinfo';
-import { QueryClient, focusManager, onlineManager } from '@tanstack/react-query';
+import { useToastController } from '@tamagui/toast';
+import { MutationCache, QueryClient, focusManager, onlineManager } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useState } from 'react';
 import type { AppStateStatus } from 'react-native';
 import { Platform } from 'react-native';
 
+import { setTransactionsMutationDefaults } from '~/features/transactions/services/transactionMutations';
 import { useAppState } from '~/hooks/useAppState';
 import { queryClientPersister } from '~/lib/queryClientPersister';
 
@@ -20,25 +22,54 @@ function onAppStateChange(status: AppStateStatus) {
   }
 }
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: Infinity,
-      retry: 2,
-    },
-  },
-  // native query config
-});
-
+const CACHE_TTL = 1000 * 60 * 60 * 24 * 7;
 export function QueryClientProvider({ children }: PropsWithChildren) {
+  const toast = useToastController();
   useAppState(onAppStateChange);
+
+  const [queryClient] = useState(() => {
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          staleTime: Infinity,
+          gcTime: CACHE_TTL,
+        },
+        mutations: {
+          gcTime: CACHE_TTL,
+          retry: true,
+        },
+      },
+      // configure global cache callbacks to show toast notifications
+      mutationCache: new MutationCache({
+        onSuccess: (data) => {
+          console.log('[Mutation success]', data);
+          // toast.success(data.message)
+        },
+        onError: (error) => {
+          toast.show('An error has occurred.', {
+            native: true,
+            message: 'Please, try again.',
+            burntOptions: { preset: 'none' },
+          });
+          console.log('[Mutation error]', error);
+        },
+      }),
+      // native query config
+    });
+    return setTransactionsMutationDefaults(queryClient);
+  });
 
   return (
     <PersistQueryClientProvider
-      persistOptions={{ persister: queryClientPersister }}
+      persistOptions={{ persister: queryClientPersister, maxAge: 1000 * 60 * 60 * 24 * 7 }}
       client={queryClient}
       onSuccess={() => {
-        // queryClient.resumePausedMutations
+        if (onlineManager.isOnline()) {
+          queryClient.resumePausedMutations().then(() => {
+            console.log('invalidating queries');
+            queryClient.invalidateQueries();
+          });
+        }
       }}>
       {children}
     </PersistQueryClientProvider>

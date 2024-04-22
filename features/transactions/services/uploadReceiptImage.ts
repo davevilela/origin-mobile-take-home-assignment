@@ -1,16 +1,8 @@
 import { transactionServices } from './transactionsServices';
 
+import { getPublicFileUrl } from '~/lib/helpers';
 import { TypedSupabaseClient } from '~/lib/supabase/types/supabase';
 import { uploadFile } from '~/services/uploadFile';
-
-function getPublicFileUrl(
-  supabase: TypedSupabaseClient,
-  params: { fileKey: string; bucket: string }
-) {
-  const { bucket, fileKey } = params;
-  const res = supabase.storage.from(bucket).getPublicUrl(fileKey);
-  return res.data.publicUrl;
-}
 
 type UploadReceiptServiceParams = {
   transactionId: string;

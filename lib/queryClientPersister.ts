@@ -1,20 +1,20 @@
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
-import { MMKV } from 'react-native-mmkv';
 
-const storage = new MMKV();
+import { globalStorage } from './storage';
 
 type PersistorStorage = Parameters<typeof createSyncStoragePersister>[0]['storage'];
 
 const clientStorage: PersistorStorage = {
   setItem: (key, value) => {
-    storage.set(key, value);
+    globalStorage.set(key, value);
   },
   getItem: (key: string) => {
-    const value = storage.getString(key);
+    const value = globalStorage.getString(key);
+
     return value === undefined ? null : value;
   },
   removeItem: (key) => {
-    storage.delete(key);
+    globalStorage.delete(key);
   },
 };
 

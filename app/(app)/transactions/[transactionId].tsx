@@ -1,9 +1,8 @@
-import { Navigation, UploadCloud } from '@tamagui/lucide-icons';
 import { format } from 'date-fns';
-import { Image, ImageStyle } from 'expo-image';
+import { Image } from 'expo-image';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { Skeleton as OGSkeleton } from 'moti/skeleton';
-import { Pressable, RefreshControl, StyleProp } from 'react-native';
+import { Pressable, RefreshControl } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, ScrollView, Separator, Spinner, Text, Theme, View, XStack, YStack } from 'tamagui';
 
@@ -12,10 +11,10 @@ import { Coordinates, MapSheet } from '~/components/MapSheet';
 import { StaticMapView } from '~/components/StaticMapView';
 import { Skeleton } from '~/components/ui/Skeleton';
 import {
-  useTransactionQuery,
   useUpdateTransactionCoordinatesMutation,
   useUpdateTransactionReceipt,
-} from '~/features/transactions/hooks/useTransactions';
+} from '~/features/transactions/hooks/useTransactionMutations';
+import { useTransactionQuery } from '~/features/transactions/hooks/useTransactions';
 import { Transaction } from '~/features/transactions/types/transactions';
 import { useImagePicker } from '~/hooks/useImagePicker';
 import { formatCurrency } from '~/lib/helpers';
@@ -114,13 +113,22 @@ function TransactionMapWidget(props: { transaction: Transaction }) {
   };
   return (
     <YStack overflow="hidden" br="$5" bg="$backgroundPress" w="100%">
-      <YStack h={180}>
+      <YStack h={180} position="relative">
         {hasLocation ? (
           <MapSheet
             title={transaction.Vendor}
             onNewCoordinates={onLocationUpdated}
             initialCoordinates={{ lat: transaction.Lat!, lon: transaction.Lon! }}>
-            <Pressable style={{ flex: 1 }}>
+            <Pressable
+              style={{
+                flex: 1,
+                zIndex: 100,
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                width: '100%',
+                height: '100%',
+              }}>
               <StaticMapView
                 f={1}
                 markerTitle={transaction.Vendor!}
@@ -174,7 +182,7 @@ function TransactionReceiptUploadWidget(props: { transaction: Transaction }) {
     async onImagePicked(value) {
       if (!value) return;
       // TODO handle error
-      const result = await mutateAsync({
+      await mutateAsync({
         transactionId: String(transaction.Id),
         uri: value!,
       });
@@ -182,7 +190,7 @@ function TransactionReceiptUploadWidget(props: { transaction: Transaction }) {
   });
 
   return (
-    <View pointerEvents={isPending ? 'none' : 'unset'}>
+    <View>
       <ImagePickerMenu
         onSelect={(mode) => {
           switch (mode) {

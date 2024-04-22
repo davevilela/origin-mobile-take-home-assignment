@@ -4,6 +4,7 @@ import React, { PropsWithChildren, createContext, useCallback, useEffect, useSta
 import { Platform } from 'react-native';
 
 import { useStableCallback } from '~/lib/react/utils';
+import { globalStorage } from '~/lib/storage';
 import { supabase } from '~/lib/supabase/supabaseClient';
 import { useSupabase } from '~/lib/supabase/useSupabase';
 
@@ -27,8 +28,12 @@ export function useAuthDataProvider(props: AuthControllerProps) {
     },
   });
 
-  const signOut = useCallback(() => {
-    supabase.auth.signOut();
+  const signOut = useCallback(async () => {
+    const res = await supabase.auth.signOut().finally(() => {
+      setSession(null);
+      globalStorage.clearAll();
+    });
+    return res;
   }, []);
 
   return {

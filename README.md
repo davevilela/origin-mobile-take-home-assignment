@@ -16,27 +16,35 @@ TODO
 
 ## BACKLOG
 
-- [ ] Project structure
+- [x] Project structure
   - [x] Setup Expo
   - [x] Setup Tamagui Theme builder
   - [x] Setup Supabase backend
   - [x] Setup Authentication
   - [x] Setup Tanstack Query
-- [ ] Features
+- [x] Features
   - [x] Sign-In Flow
+    - [x] Profile screen
+    - [ ] Edit user infos
   - [x] Sign-Up Flow
-  - [ ] File Upload
+  - [x] File Upload
     - [x] Avatar upload
-    - [ ] Receipts upload
-    - [ ] Load image from bucket
+    - [x] Receipts upload
+    - [x] Load image from bucket
   - [x] Transactions service
-  - [ ] Transactions Listing Page
+  - [x] Transactions Listing Page
     - [x] Pull to refresh
     - [x] Pagination
     - [x] Filtering by category
   - [ ] Transaction Details Page
-    - [ ] Pick Latitude and longitude on Map
-    - [ ] Display location with static map API
-    - [ ] Upload receipt for transaction
-  - [x] IOS Compatibily
-  - [ ] Android Compatibility
+    - [x] Pick Latitude and longitude on Map
+    - [x] Display location with static map API
+    - [x] Upload receipt for transaction
+    - [ ] Image Viewer
+  - [x] Ensure IOS Compatibily
+  - [x] Ensure Android Compatibility
+
+Chores: 
+  - [ ] Refactor Transactions list page 
+  - [ ] Refactor Transaction View page
+  - [ ] Refactor Transaction View page

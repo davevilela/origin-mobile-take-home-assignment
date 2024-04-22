@@ -3,12 +3,11 @@ import { AuthApiError } from '@supabase/supabase-js';
 import { useLocalSearchParams, Link, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Dimensions, KeyboardAvoidingView, Platform } from 'react-native';
+import { KeyboardAvoidingView, Platform } from 'react-native';
 import {
   Paragraph,
   Text,
   YStack,
-  Card,
   Button,
   ScrollView,
   ThemeableStack,
@@ -22,7 +21,6 @@ import { z } from 'zod';
 import { FieldControl } from '~/components/ui/FieldControl';
 import { FlushInput } from '~/components/ui/FlushInput';
 import { SecureEntryButton } from '~/components/ui/SecureEntryButton';
-import { transactionServices } from '~/features/transactions/services/transactionsServices';
 import { useSafeAreaInsets } from '~/hooks/useSafeAreaInsets';
 import { useSupabase } from '~/lib/supabase/useSupabase';
 
@@ -57,8 +55,6 @@ function useCredentialsSignIn() {
   return [signInWithCredentials, { loading, error }] as const;
 }
 
-const dimensions = Dimensions.get('screen');
-const isDev = process.env.NODE_ENV === 'development';
 export const SignInScreen = () => {
   const insets = useSafeAreaInsets();
   const [secureEntry, setSecureEntry] = useState(true);
@@ -69,7 +65,7 @@ export const SignInScreen = () => {
 
   const form = useForm<z.infer<typeof SignInSchema>>({
     resolver: zodResolver(SignInSchema),
-    defaultValues: isDev ? { email: 'root@example.com', password: 'root' } : undefined,
+    // defaultValues: isDev ? { email: 'root@example.com', password: 'root' } : undefined,
   });
 
   useEffect(() => {
@@ -98,111 +94,98 @@ export const SignInScreen = () => {
     <YStack pb={insets.bottom} f={1} ai="center" position="relative">
       <ScrollView
         w="100%"
-        px="$3"
-        zIndex="$5"
+        px="$7"
         h="100%"
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="interactive"
         contentContainerStyle={{
-          justifyContent: 'center',
+          justifyContent: 'space-between',
           h: '100%',
           gap: '$5',
         }}>
-        <YStack px="$2">
-          <H1 fontFamily="$mono">Fintrack</H1>
-          <H3 fontFamily="$mono">Track your expenses at the speed of thought.</H3>
+        <YStack mt="$14" ai="center">
+          <H1 fontFamily="$mono" fontWeight="800">
+            Fintrack
+          </H1>
+          <H3 fontFamily="$mono" textAlign="center">
+            Track your expenses at the speed of thought.
+          </H3>
         </YStack>
 
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           keyboardVerticalOffset={40}>
           <Form disabled={loading} asChild onSubmit={onSubmit}>
-            <Card bordered borderRadius="$8" w="100%" zIndex="$4">
-              <YStack p="$4" w="100%" gap="$3">
-                <Controller
-                  control={form.control}
-                  name="email"
-                  render={(control) => (
-                    <FieldControl
-                      name={control.field.name}
-                      errorMessage={control.fieldState.error?.message}>
-                      <FlushInput
-                        onChangeText={control.field.onChange}
-                        value={control.field.value}
-                        label="Your Email"
-                        placeholder="jon@doe.com"
-                        autoCapitalize="none"
-                        keyboardType="email-address"
-                      />
-                    </FieldControl>
-                  )}
-                />
+            <YStack w="100%" gap="$3">
+              <Controller
+                control={form.control}
+                name="email"
+                render={(control) => (
+                  <FieldControl
+                    name={control.field.name}
+                    errorMessage={control.fieldState.error?.message}>
+                    <FlushInput
+                      onChangeText={control.field.onChange}
+                      value={control.field.value}
+                      label="Your Email"
+                      placeholder="jon@doe.com"
+                      autoCapitalize="none"
+                      keyboardType="email-address"
+                    />
+                  </FieldControl>
+                )}
+              />
 
-                <Controller
-                  control={form.control}
-                  name="password"
-                  render={(control) => (
-                    <FieldControl
-                      name={control.field.name}
-                      errorMessage={control.fieldState.error?.message}>
-                      <FlushInput
-                        label="Password"
-                        secureTextEntry={secureEntry}
-                        autoCapitalize="none"
-                        placeholder="*******"
-                        onChangeText={control.field.onChange}
-                        value={control.field.value}
-                        rightElement={
-                          <SecureEntryButton isSecure={secureEntry} onChange={setSecureEntry} />
-                        }
-                      />
-                    </FieldControl>
-                  )}
-                />
+              <Controller
+                control={form.control}
+                name="password"
+                render={(control) => (
+                  <FieldControl
+                    name={control.field.name}
+                    errorMessage={control.fieldState.error?.message}>
+                    <FlushInput
+                      label="Password"
+                      secureTextEntry={secureEntry}
+                      autoCapitalize="none"
+                      placeholder="*******"
+                      onChangeText={control.field.onChange}
+                      value={control.field.value}
+                      rightElement={
+                        <SecureEntryButton isSecure={secureEntry} onChange={setSecureEntry} />
+                      }
+                    />
+                  </FieldControl>
+                )}
+              />
 
-                <Button
-                  onPress={async () => {
-                    onSubmit();
-                  }}
-                  size="$5"
-                  theme="accent"
-                  bordered
-                  disabled={loading}
-                  borderRadius="$6">
-                  {loading && <Spinner />}
-                  Login
-                </Button>
-                {/* <ForgotPasswordLink /> */}
-                <ThemeableStack my="$1" w="100%" bordered />
-                <YStack ai="center" gap="$4">
-                  <Link asChild href="/(auth)/sign-up">
-                    <Button size="$5" borderRadius="$6" bg="$backgroundPress" w="100%">
-                      Sign-up now
-                    </Button>
-                  </Link>
-                  {/* <SignUpLink />
-                  <ForgotPasswordLink /> */}
-                </YStack>
+              <Button
+                onPress={async () => {
+                  onSubmit();
+                }}
+                size="$5"
+                theme="accent"
+                bordered
+                disabled={loading}>
+                {loading && <Spinner />}
+                Login
+              </Button>
+
+              <ThemeableStack my="$1" w="100%" bordered />
+              <YStack ai="center" gap="$4">
+                <Link asChild href="/(auth)/sign-up">
+                  <Button size="$5" bg="$backgroundPress" w="100%">
+                    Sign-up now
+                  </Button>
+                </Link>
               </YStack>
-
-              <Card.Background />
-            </Card>
+            </YStack>
           </Form>
         </KeyboardAvoidingView>
       </ScrollView>
 
-      {/* <Image
-        h={dimensions.height}
-        w="100%"
-        zIndex="$0"
-        resizeMode="cover"
-        position="absolute"
-        top={0}
-        bottom={0}
-        right={0}
-        source={require('@/assets/images/bg.png')}
-      /> */}
-      <Text color="white">V0.0.1</Text>
+      <Text mt="$3" color="white">
+        V0.0.1
+      </Text>
     </YStack>
   );
 };

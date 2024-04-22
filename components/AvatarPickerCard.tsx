@@ -44,14 +44,7 @@ export function AvatarPickerCard({
   };
 
   return (
-    <YStack
-      pointerEvents={disabled ? 'none' : 'unset'}
-      bg="$gray2"
-      br="$6"
-      ai="center"
-      jc="center"
-      p="$true"
-      gap="$true">
+    <YStack bg="$gray2" br="$6" ai="center" jc="center" p="$true" gap="$true">
       <ImagePickerMenu remove={!!image} onSelect={onPickerOption}>
         <Circle pressTheme bg="$gray6" size="$15" theme="alt2" overflow="hidden">
           {image || url ? (

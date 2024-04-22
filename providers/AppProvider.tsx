@@ -1,3 +1,4 @@
+import { ToastProvider } from '@tamagui/toast';
 import { ComponentProps, PropsWithChildren } from 'react';
 
 import { QueryClientProvider } from './QueryClientProvider';
@@ -12,6 +13,7 @@ const BaseProviders = compose([
   ThemeProvider,
   SafeAreaProvider,
   TamaguiProvider,
+  ToastProvider,
   QueryClientProvider,
 ]);
 
