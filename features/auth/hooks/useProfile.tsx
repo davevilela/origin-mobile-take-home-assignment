@@ -16,6 +16,8 @@ export function useProfile() {
   const user = session?.user;
 
   const { data, isLoading, refetch } = useQuery({
+    networkMode: 'offlineFirst',
+    staleTime: 5000,
     queryKey: keys.profile(user?.id!),
     queryFn: async () => {
       if (!user?.id) return null;
@@ -39,6 +41,7 @@ export function useProfile() {
       ? getPublicFileUrl(supabase, { fileKey: data?.avatar_url, bucket: 'avatars' })
       : null;
   }, [supabase, data?.avatar_url]);
+
   const profile = { ...(data || {}), avatarUrl, email: user?.email };
   return { profile, isLoading, refetch };
 }
