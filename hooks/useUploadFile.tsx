@@ -1,25 +1,13 @@
-import { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
 
 import { useSupabase } from '~/lib/supabase/useSupabase';
-import { UploadResult, uploadFile } from '~/services/uploadFile';
+import { uploadFile } from '~/services/uploadFile';
 
 export function useUploadFile(bucket: string) {
   const supabase = useSupabase();
-  const [loading, setLoading] = useState(false);
+  const mutation = useMutation({
+    mutationFn: ({ uri }: { uri: string }) => uploadFile(supabase, { bucket, uri }),
+  });
 
-  const [uploadResult, setUploadResult] = useState<UploadResult | null>(null);
-
-  async function execute({ uri }: { uri: string }) {
-    setUploadResult(null);
-    setLoading(true);
-    const uploadTask = await uploadFile(supabase, { uri, bucket });
-
-    setUploadResult(uploadTask);
-
-    setLoading(false);
-
-    return uploadTask;
-  }
-
-  return [execute, { loading, ...uploadResult }] as const;
+  return mutation;
 }

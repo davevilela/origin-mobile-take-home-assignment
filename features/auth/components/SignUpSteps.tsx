@@ -8,7 +8,7 @@ import { Alert, AlertButton, AlertOptions } from 'react-native';
 import { Button, Form, SizableText, Spinner, YStack, Text } from 'tamagui';
 import { z } from 'zod';
 
-import { StepTitle } from './StepHeader';
+import { StepTitle } from './StepTitle';
 import { useSignUpWithEmail } from '../hooks/useSignUpWithEmail';
 import { UserSignUpData, useSignUpWizardContext } from '../hooks/useSignUpWizard';
 import { PasswordConfirmationSchema, UserDataSchema } from '../schemas/signUpSchema';
@@ -280,7 +280,7 @@ function UserAvatarStep() {
   const { session } = useAuth();
   const supabase = useSupabase();
   const { setData, data } = useSignUpWizardContext();
-  const [uploadFile, { loading }] = useUploadFile('avatars');
+  const { mutateAsync: uploadFile, isPending: loading } = useUploadFile('avatars');
   const { next } = useStepperContext();
 
   const handleUpload = async () => {
