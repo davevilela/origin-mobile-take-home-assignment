@@ -7,6 +7,11 @@ import { templates } from './templates';
 
 // --- themeBuilder ---
 
+/**
+ * Inspired by Tamagui themes v3
+ * see: https://github.com/tamagui/tamagui/blob/master/packages/themes/src/v3-themes.ts
+ */
+
 const themeBuilder = createThemeBuilder()
   .addPalettes(palettes)
   .addTemplates(templates)
@@ -54,12 +59,8 @@ const themeBuilder = createThemeBuilder()
     // avoidNestingWithin: ["alt1", "alt2"],
   });
 
-// --- themes ---
-
 const themesIn = themeBuilder.build();
 
 export type Theme = Record<keyof typeof templates.base, string> & typeof nonInherited.light;
 export type ThemesOut = Record<keyof typeof themesIn, Theme>;
 export const themes = themesIn as ThemesOut;
-
-// --- utils ---

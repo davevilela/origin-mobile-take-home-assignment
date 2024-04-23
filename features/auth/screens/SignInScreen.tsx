@@ -1,71 +1,29 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AuthApiError } from '@supabase/supabase-js';
 import { useLocalSearchParams, Link, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { KeyboardAvoidingView, Platform } from 'react-native';
-import {
-  Paragraph,
-  Text,
-  YStack,
-  Button,
-  ScrollView,
-  ThemeableStack,
-  Form,
-  Spinner,
-  H1,
-  H3,
-} from 'tamagui';
+import { Text, YStack, Button, ScrollView, ThemeableStack, Form, Spinner, H1, H3 } from 'tamagui';
 import { z } from 'zod';
+
+import { useSignInWithCredentials } from '../hooks/useSignInWithCredentials';
+import { SignInSchema } from '../schemas/signInSchema';
 
 import { FieldControl } from '~/components/ui/FieldControl';
 import { FlushInput } from '~/components/ui/FlushInput';
 import { SecureEntryButton } from '~/components/ui/SecureEntryButton';
 import { useSafeAreaInsets } from '~/hooks/useSafeAreaInsets';
-import { useSupabase } from '~/lib/supabase/useSupabase';
 
-const SignInSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6, { message: 'Password must be at least 6 characters long.' }),
-});
-
-function useCredentialsSignIn() {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<AuthApiError | null>(null);
-  const supabase = useSupabase();
-
-  async function signInWithCredentials({ email, password }: z.infer<typeof SignInSchema>) {
-    setLoading(true);
-    try {
-      const response = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      return response;
-    } catch (error) {
-      if (error instanceof AuthApiError) {
-        setError(error);
-      }
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  return [signInWithCredentials, { loading, error }] as const;
-}
-
-export const SignInScreen = () => {
+export function SignInScreen() {
   const insets = useSafeAreaInsets();
   const [secureEntry, setSecureEntry] = useState(true);
-  const [signIn, { loading }] = useCredentialsSignIn();
+  const [signIn, { loading }] = useSignInWithCredentials();
 
   const router = useRouter();
   const params = useLocalSearchParams<{ email?: string }>();
 
   const form = useForm<z.infer<typeof SignInSchema>>({
     resolver: zodResolver(SignInSchema),
-    // defaultValues: isDev ? { email: 'root@example.com', password: 'root' } : undefined,
   });
 
   useEffect(() => {
@@ -83,8 +41,6 @@ export const SignInScreen = () => {
     if (!res?.data.session || !!res.error) {
       const errorMessage = res?.error?.message || 'Unexpected Error';
       form.setError('password', { type: 'custom', message: errorMessage });
-    } else {
-      router.replace('/');
     }
   }
 
@@ -167,7 +123,7 @@ export const SignInScreen = () => {
                 bordered
                 disabled={loading}>
                 {loading && <Spinner />}
-                Login
+                Sign-in
               </Button>
 
               <ThemeableStack my="$1" w="100%" bordered />
@@ -188,14 +144,4 @@ export const SignInScreen = () => {
       </Text>
     </YStack>
   );
-};
-
-const ForgotPasswordLink = () => {
-  return (
-    <Link href="/(auth)/sign-in">
-      <Paragraph textDecorationLine="underline" ta="center">
-        Forgot
-      </Paragraph>
-    </Link>
-  );
-};
+}

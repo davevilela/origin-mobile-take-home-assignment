@@ -61,9 +61,6 @@ export function useSignUpWithEmail() {
         session: session!,
       };
     } catch (error) {
-      // if (isAuthApiError(error)) {
-      //   // error.code == ErrorCode
-      // }
       if (error instanceof Error) {
         response = {
           success: false,
