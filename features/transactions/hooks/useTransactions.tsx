@@ -1,9 +1,9 @@
 /* eslint-disable node/handle-callback-err */
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMemo } from 'react';
 
 import { transactionServices } from '../services/transactionsServices';
-import { Transaction } from '../types/transactions';
+import { Transaction, TransactionPaginatedRequestBody } from '../types/transactions';
 
 export const transactionsQueryKeys = {
   list: ['transactions'],
@@ -37,10 +37,29 @@ export function useTransactionsInfiniteQuery({ pageSize = 10 }: { pageSize?: num
 }
 
 export function useTransactionQuery({ id }: { id: string }) {
+  const queryClient = useQueryClient();
   const { data: transaction, ...rest } = useQuery({
     queryKey: transactionsQueryKeys.show(id),
+    // staleTime: 1000,
     queryFn: () => transactionServices.fetchTransaction(id),
     networkMode: 'offlineFirst',
+    initialData: () => {
+      const queryData = queryClient.getQueryData<{
+        pages: TransactionPaginatedRequestBody[];
+        pageParams: number[];
+      }>(transactionsQueryKeys.list);
+
+      const queryPages = queryData?.pages || [];
+
+      for (const page of queryPages) {
+        const foundTransaction = page.Transactions.find(
+          (transaction) => `${transaction.Id}` === id
+        );
+        if (foundTransaction) return foundTransaction;
+      }
+    },
+    initialDataUpdatedAt: () =>
+      queryClient.getQueryState(transactionsQueryKeys.list)?.dataUpdatedAt,
   });
 
   return {
