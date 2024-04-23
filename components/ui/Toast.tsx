@@ -59,16 +59,7 @@ export const ToastProvider = ({
   ...viewportProps
 }: { children: React.ReactNode } & ToastViewportProps) => {
   return (
-    <ToastProviderOG
-      swipeDirection="horizontal"
-      swipeThreshold={20}
-      duration={6000}
-      native={
-        [
-          /* uncomment the next line to do native toasts on mobile - note that it won't be as customizable as custom toasts, especially on android */
-          // 'mobile'
-        ]
-      }>
+    <ToastProviderOG swipeDirection="horizontal" swipeThreshold={20} duration={6000}>
       {children}
       <Portal zIndex={9999}>
         <ToastViewport {...viewportProps} />

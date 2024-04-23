@@ -2,7 +2,7 @@ import React, { PropsWithChildren, useRef, useState } from 'react';
 import { TextInput } from 'react-native';
 import { InputProps, YStack, SizableText, Input, StackProps, Stack } from 'tamagui';
 
-import { mergeRefs } from '~/lib/react/mergeRefs';
+import { mergeRefs } from '~/lib/react/utils';
 
 export function FlushInputFrame(
   props: PropsWithChildren<
