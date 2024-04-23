@@ -1,5 +1,6 @@
 import { useNetInfo } from '@react-native-community/netinfo';
 import { LogOut } from '@tamagui/lucide-icons';
+import { useQueryClient } from '@tanstack/react-query';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Platform } from 'react-native';
@@ -32,6 +33,7 @@ function NetworkMetrics() {
 export default function Modal() {
   const { profile } = useProfile();
   const { signOut } = useAuth();
+  const queryClient = useQueryClient();
   const { full_name, avatarUrl, email } = profile || {};
   return (
     <>
@@ -61,7 +63,15 @@ export default function Modal() {
         </Card>
         <NetworkMetrics />
 
-        <Button iconAfter={<LogOut />} onPress={() => signOut()} size="$5" theme="red_alt2">
+        <Button
+          iconAfter={<LogOut />}
+          onPress={() => {
+            signOut();
+
+            queryClient.clear();
+          }}
+          size="$5"
+          theme="red_alt2">
           Sign-out
         </Button>
       </YStack>

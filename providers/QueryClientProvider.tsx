@@ -66,7 +66,6 @@ export function QueryClientProvider({ children }: PropsWithChildren) {
       onSuccess={() => {
         if (onlineManager.isOnline()) {
           queryClient.resumePausedMutations().then(() => {
-            console.log('invalidating queries');
             queryClient.invalidateQueries();
           });
         }
