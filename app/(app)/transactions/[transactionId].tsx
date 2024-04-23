@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
 import { Image } from 'expo-image';
+import { CameraType } from 'expo-image-picker';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { Skeleton as OGSkeleton } from 'moti/skeleton';
 import { Pressable, RefreshControl } from 'react-native';
@@ -18,7 +19,6 @@ import { useTransactionQuery } from '~/features/transactions/hooks/useTransactio
 import { Transaction } from '~/features/transactions/types/transactions';
 import { useImagePicker } from '~/hooks/useImagePicker';
 import { formatCurrency } from '~/lib/helpers';
-// roadmap, satellite, hybrid, and terrain
 
 export default function Screen() {
   const insets = useSafeAreaInsets();
@@ -169,7 +169,7 @@ function TransactionReceiptImageWidget(props: { transaction: Transaction }) {
       </YStack>
 
       <XStack p="$3" borderTopWidth={1} btc="$borderColor">
-        <Text fontSize="$5">Update receipt</Text>
+        <Text fontSize="$5">Receipt Image</Text>
       </XStack>
     </YStack>
   );
@@ -181,7 +181,7 @@ function TransactionReceiptUploadWidget(props: { transaction: Transaction }) {
   const picker = useImagePicker({
     async onImagePicked(value) {
       if (!value) return;
-      // TODO handle error
+
       await mutateAsync({
         transactionId: String(transaction.Id),
         uri: value!,
@@ -195,7 +195,7 @@ function TransactionReceiptUploadWidget(props: { transaction: Transaction }) {
         onSelect={(mode) => {
           switch (mode) {
             case 'camera':
-              picker.takePhoto();
+              picker.takePhoto({ cameraType: CameraType.back });
               break;
             case 'mediaLibrary':
               picker.pickImage();

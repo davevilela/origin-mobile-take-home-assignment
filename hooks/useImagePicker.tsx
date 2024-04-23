@@ -78,7 +78,8 @@ export function useImagePicker({ onImagePicked, uri }: ImagePickerProps = {}) {
     };
   };
 
-  const takePhoto = async () => {
+  const takePhoto = async (params: { cameraType?: ImagePicker.CameraType } = {}) => {
+    const { cameraType = ImagePicker.CameraType.front } = params;
     if (!cameraPermission?.granted && !cameraPermission?.canAskAgain) {
       Alert.alert(
         'Permission not granted',
@@ -88,6 +89,7 @@ export function useImagePicker({ onImagePicked, uri }: ImagePickerProps = {}) {
     }
 
     const permissionResult = await requestCameraPermission();
+
     if (!permissionResult.granted) {
       Alert.alert('Permission not granted', 'Please grant permission to execute this action.');
       return { error: 'Permission not granted' };
@@ -97,7 +99,7 @@ export function useImagePicker({ onImagePicked, uri }: ImagePickerProps = {}) {
       aspect: [4, 3],
       quality: 0.8,
       exif: false,
-      cameraType: ImagePicker.CameraType.front,
+      cameraType,
       selectionLimit: 1,
       mediaTypes: MediaTypeOptions.Images,
     });
