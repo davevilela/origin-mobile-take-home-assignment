@@ -58,6 +58,8 @@ You may use the following commands:
 - **assets/**: Static resources such as images, logos, and icons.
 - **supabase/**: Configuration and service files for interacting with the Supabase backend, handling API calls for authentication and data retrieval.
 - **lib/**: General utilities and libraries that provide functionality not specific to the application's UI or business logic but necessary for its operation, like utility functions and helper modules.
+- **services/**: Contains service files that abstract and manage API interactions, data transformation, file uploads and complex business logic. Generally these services interact with external services.
+- **app/**: File-based routing system managed by expo-router, uses react-navigation under the hood and is inspired by frameworks like nextJS. This directory contains all the routing configurations and files, which define the navigational structure of the app.
 
 ## Demo videos
 
