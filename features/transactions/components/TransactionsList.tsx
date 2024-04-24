@@ -45,7 +45,7 @@ export function TransactionsList(props: { searchTerm: string }) {
           const isFirst = index === 0;
 
           return (
-            <Link href={`/(app)/transactions/${item.Id}`} asChild>
+            <Link href={`/(app)/transaction/${item.Id}`} asChild>
               <TransactionItem
                 transaction={item}
                 {...(isFirst ? transactionItemStyles.first : {})}

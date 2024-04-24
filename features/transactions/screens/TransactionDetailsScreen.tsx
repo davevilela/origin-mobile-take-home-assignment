@@ -1,11 +1,13 @@
 import { format } from 'date-fns';
 import { Image } from 'expo-image';
 import { CameraType } from 'expo-image-picker';
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { Link } from 'expo-router';
 import { Skeleton as OGSkeleton } from 'moti/skeleton';
 import { Pressable, RefreshControl } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, ScrollView, Separator, Spinner, Text, Theme, View, XStack, YStack } from 'tamagui';
+
+import { transactionUIConfigurations } from '../utils';
 
 import { ImagePickerMenu } from '~/components/ImagePickerMenu';
 import { Coordinates, MapSheet } from '~/components/MapSheet';
@@ -20,82 +22,79 @@ import { Transaction } from '~/features/transactions/types/transactions';
 import { useImagePicker } from '~/hooks/useImagePicker';
 import { formatCurrency } from '~/lib/helpers';
 
-export default function Screen() {
+export function TransactionDetailsScreen({ transactionId }: { transactionId: string }) {
   const insets = useSafeAreaInsets();
-  const { transactionId } = useLocalSearchParams<{ transactionId: string }>();
+
   const { transaction, refetch, isRefetching } = useTransactionQuery({
     id: transactionId,
   });
 
+  const { formatTransactionValue, theme } =
+    transactionUIConfigurations[transaction?.Type || 'deposit'];
+
+  const transactionTotal = formatCurrency(formatTransactionValue(transaction?.Amount || 0));
+
   return (
-    <>
-      <Stack.Screen
-        options={{
-          title: '',
-          headerShadowVisible: false,
-          headerShown: true,
-        }}
-      />
-      <ScrollView
-        refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={() => refetch({})} />}
-        bg="$background"
-        px="$4"
-        pt="$4"
-        f={1}>
-        <OGSkeleton.Group show={!transaction}>
-          <YStack ai="center" f={1} pb={insets.bottom + 40}>
+    <ScrollView
+      refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={() => refetch({})} />}
+      bg="$background"
+      px="$4"
+      pt="$4"
+      f={1}>
+      <OGSkeleton.Group show={!transaction}>
+        <YStack ai="center" f={1} pb={insets.bottom + 40}>
+          <Skeleton width="100%">
+            <>
+              {!!transaction?.Amount && (
+                <Text fontWeight="700" fontFamily="$heading" fontSize="$12" mt="$4">
+                  {transactionTotal}
+                </Text>
+              )}
+              <Theme name="alt1">
+                <Text fontSize="$6">{transaction?.Vendor}</Text>
+              </Theme>
+            </>
+          </Skeleton>
+
+          <YStack gap="$4" mt="$8" w="100%">
             <Skeleton width="100%">
-              <>
-                {!!transaction?.Amount && (
-                  <Text fontWeight="700" fontFamily="$heading" fontSize="$12" mt="$4">
-                    {formatCurrency(transaction?.Amount)}
+              <YStack gap="$4" p="$3" br="$5" bg="$backgroundPress" w="100%">
+                <YStack gap="$2" px="$1">
+                  <Text theme={theme} fontSize="$5" textTransform="capitalize">
+                    {transaction?.Type}
                   </Text>
-                )}
-                <Theme name="alt1">
-                  <Text fontSize="$6">{transaction?.Vendor}</Text>
-                </Theme>
-              </>
+                  <Theme name="alt1">
+                    {!!transaction?.Date && (
+                      <Text fontSize="$5">{format(new Date(transaction?.Date), 'PPP')}</Text>
+                    )}
+                    <Text textTransform="capitalize" fontSize="$5">
+                      {transaction?.Category}
+                    </Text>
+                  </Theme>
+                </YStack>
+                <Separator bc="$gray7" />
+                <XStack px="$1" jc="space-between">
+                  <Text fontSize="$5">Total</Text>
+                  {!!transaction?.Amount && <Text fontSize="$5">{transactionTotal}</Text>}
+                </XStack>
+              </YStack>
             </Skeleton>
 
-            <YStack gap="$4" mt="$8" w="100%">
-              <Skeleton width="100%">
-                <YStack gap="$4" p="$3" br="$5" bg="$backgroundPress" w="100%">
-                  <YStack gap="$2" px="$1">
-                    <Text fontSize="$5">Type: {transaction?.Type}</Text>
-                    <Theme name="alt1">
-                      {!!transaction?.Date && (
-                        <Text fontSize="$5">{format(new Date(transaction?.Date), 'PPP')}</Text>
-                      )}
-                      <Text textTransform="capitalize" fontSize="$5">
-                        {transaction?.Category}
-                      </Text>
-                    </Theme>
-                  </YStack>
-                  <Separator bc="$gray7" />
-                  <XStack px="$1" jc="space-between">
-                    <Text fontSize="$5">Total</Text>
-                    {!!transaction?.Amount && (
-                      <Text fontSize="$5">{formatCurrency(transaction?.Amount)}</Text>
-                    )}
-                  </XStack>
-                </YStack>
-              </Skeleton>
-              <Skeleton width="100%">
-                <TransactionMapWidget transaction={transaction!} />
-              </Skeleton>
+            <Skeleton width="100%">
+              <TransactionMapWidget transaction={transaction!} />
+            </Skeleton>
 
-              <Skeleton width="100%">
-                <TransactionReceiptUploadWidget transaction={transaction!} />
-              </Skeleton>
+            <Skeleton width="100%">
+              <TransactionReceiptUploadWidget transaction={transaction!} />
+            </Skeleton>
 
-              <Skeleton width="100%">
-                <TransactionReceiptImageWidget transaction={transaction!} />
-              </Skeleton>
-            </YStack>
+            <Skeleton width="100%">
+              <TransactionReceiptImageWidget transaction={transaction!} />
+            </Skeleton>
           </YStack>
-        </OGSkeleton.Group>
-      </ScrollView>
-    </>
+        </YStack>
+      </OGSkeleton.Group>
+    </ScrollView>
   );
 }
 
@@ -111,6 +110,7 @@ function TransactionMapWidget(props: { transaction: Transaction }) {
       Lon: location.lon,
     });
   };
+
   return (
     <YStack overflow="hidden" br="$5" bg="$backgroundPress" w="100%">
       <YStack h={180} position="relative">
@@ -163,15 +163,17 @@ function TransactionReceiptImageWidget(props: { transaction: Transaction }) {
 
   if (!transaction?.ReceiptImage) return null;
   return (
-    <YStack overflow="hidden" br="$5" bg="$backgroundPress" w="100%">
-      <YStack h={180}>
-        <Image source={{ uri: transaction?.ReceiptImage! }} style={{ flex: 1 }} />
-      </YStack>
+    <Link asChild href={`/(app)/transaction/${transaction.Id}/receipt`}>
+      <YStack overflow="hidden" br="$5" bg="$backgroundPress" w="100%">
+        <YStack h={180}>
+          <Image source={{ uri: transaction?.ReceiptImage! }} style={{ flex: 1 }} />
+        </YStack>
 
-      <XStack p="$3" borderTopWidth={1} btc="$borderColor">
-        <Text fontSize="$5">Receipt Image</Text>
-      </XStack>
-    </YStack>
+        <XStack p="$3" borderTopWidth={1} btc="$borderColor">
+          <Text fontSize="$5">Receipt Image</Text>
+        </XStack>
+      </YStack>
+    </Link>
   );
 }
 

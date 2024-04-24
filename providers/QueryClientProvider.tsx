@@ -39,22 +39,16 @@ export function QueryClientProvider({ children }: PropsWithChildren) {
           retry: true,
         },
       },
-      // configure global cache callbacks to show toast notifications
       mutationCache: new MutationCache({
-        onSuccess: (data) => {
-          console.log('[Mutation success]', data);
-          // toast.success(data.message)
-        },
         onError: (error) => {
           toast.show('An error has occurred.', {
             native: true,
             message: 'Please, try again.',
             burntOptions: { preset: 'none' },
           });
-          console.log('[Mutation error]', error);
+          console.debug('[Mutation error]', error);
         },
       }),
-      // native query config
     });
     return setTransactionsMutationDefaults(queryClient);
   });
