@@ -36,15 +36,13 @@ TODO
     - [x] Pull to refresh
     - [x] Pagination
     - [x] Filtering by category
-  - [ ] Transaction Details Page
+  - [x] Transaction Details Page
     - [x] Pick Latitude and longitude on Map
     - [x] Display location with static map API
     - [x] Upload receipt for transaction
-    - [ ] Image Viewer
+    - [x] Image Viewer
   - [x] Ensure IOS Compatibily
   - [x] Ensure Android Compatibility
 
-Chores: 
-  - [ ] Refactor Transactions list page 
-  - [ ] Refactor Transaction View page
-  - [ ] Refactor Transaction View page
+
+
