@@ -48,7 +48,7 @@ You may use the following commands:
   npm run android
   ```
 
-## Project strucute
+## Project structure
 
 - **components/**: Reusable UI components like buttons, input fields, etc.
 - **features/**: Houses the specific features of the application, such as the SignIn, SignUp, TransactionList, and TransactionDetails components, each encapsulating all related logic.
@@ -109,8 +109,8 @@ Overall, the tooling and structure are designed to meet the requirements of a sc
     - [x] Display location with static map API
     - [x] Upload receipt for transaction
     - [x] Image Viewer
-  - [x] Ensure IOS Compatibily
-  - [x] Ensure Android Compatibility
+  - [x] Ensure IOS compatibility
+  - [x] Ensure Android compatibility
 
 
 
