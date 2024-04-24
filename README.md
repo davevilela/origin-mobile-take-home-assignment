@@ -62,8 +62,10 @@ You may use the following commands:
 ## Demo videos
 
 ### iOS:
+https://www.youtube.com/watch?v=BuzBVgnrxsI
 
 ### Android:
+https://www.youtube.com/watch?v=Unnhfn_9m94
 
 ## Final Considerations about tooling and project structure
 
