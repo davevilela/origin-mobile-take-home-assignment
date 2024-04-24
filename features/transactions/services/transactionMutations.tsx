@@ -1,4 +1,4 @@
-import { DefaultError, QueryClient, useMutation } from '@tanstack/react-query';
+import { QueryClient } from '@tanstack/react-query';
 
 import { transactionServices } from './transactionsServices';
 import { getReceiptUploadService } from './uploadReceiptImage';
