@@ -1,6 +1,7 @@
 # Origin Mobile Take-home Assignment
 
-My submission for Origin's Mobile Take-home Assignment
+### My submission for Origin's Mobile Take-home Assignment
+<img width="1472" alt="Screenshot 2024-04-24 at 00 39 58" src="https://github.com/davevilela/origin-mobile-take-home-assignment/assets/18126630/891ffca9-6b36-4acd-852c-a7fb6e0a720f">
 
 ## Running Locally
 
@@ -57,6 +58,12 @@ You may use the following commands:
 - **assets/**: Static resources such as images, logos, and icons.
 - **supabase/**: Configuration and service files for interacting with the Supabase backend, handling API calls for authentication and data retrieval.
 - **lib/**: General utilities and libraries that provide functionality not specific to the application's UI or business logic but necessary for its operation, like utility functions and helper modules.
+
+## Demo videos
+
+### iOS:
+
+### Android:
 
 ## Final Considerations about tooling and project structure
 
