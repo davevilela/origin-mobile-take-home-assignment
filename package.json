@@ -6,9 +6,9 @@
     "test": "jest",
     "generate-themes": "tamagui generate-themes ./theme/theme-builder.ts ./theme/theme-output.ts",
     "android": "expo run:android",
-    "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
     "ios": "expo run:ios",
     "start": "expo start",
+    "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
     "web": "expo start --web",
     "prebuild": "npx expo prebuild",
     "supabase:gen-types": "supabase gen types typescript --linked --schema=public > ./lib/supabase/types/database.types.ts && prettier --write ./lib/supabase/types/database.types.ts"
